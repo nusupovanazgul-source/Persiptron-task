@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Перцептрон негіздері - Интерактивті оқу сайты</title>
+    <style>
+        :root {
+            --primary-color: #3f51b5;
+            --primary-light: #757de8;
+            --primary-dark: #002984;
+            --secondary-color: #ff9800;
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --correct-color: #4caf50;
+            --wrong-color: #f44336;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+            color: white;
+            padding: 2.5rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.3rem;
+        }
+
+        nav {
+            background-color: var(--primary-dark);
+            display: flex;
+            justify-content: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav a {
+            color: white;
+            padding: 1rem 1.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        nav a:hover {
+            background-color: var(--primary-light);
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        section {
+            background: var(--card-bg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-light);
+            padding-bottom: 0.5rem;
+            margin-top: 0;
+        }
+
+        h3 {
+            color: var(--primary-dark);
+        }
+
+        /* Simulator Styles */
+        .simulator-box {
+            background-color: #eef2ff;
+            border: 2px solid var(--primary-light);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .control-item {
+            flex: 1;
+            min-width: 200px;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .control-item label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input[type=range] {
+            width: 100%;
+        }
+
+        .sim-output {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .badge-1 { background-color: var(--correct-color); }
+        .badge-0 { background-color: #757575; }
+
+        /* Tables & Quiz */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        tr:nth-child(even) { background-color: #f9f9f9; }
+
+        .quiz-card {
+            background: #fafafa;
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+        }
+
+        .quiz-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 10px 15px;
+            margin: 8px 0;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+
+        .quiz-btn:hover {
+            background: #e8eaf6;
+        }
+
+        .feedback {
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .correct { color: var(--correct-color); }
+        .incorrect { color: var(--wrong-color); }
+
+        code {
+            background-color: #e0e0e0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        textarea {
+            width: 100%;
+            height: 80px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            margin-top: 8px;
+        }
+
+        button.action-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        button.action-btn:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Перцептрон негіздері</h1>
+    <p>Интерактивті оқу құралы және нейрондық желі симуляторы</p>
+</header>
+
+<nav>
+    <a href="#theory">Теория</a>
+    <a href="#simulator">Симулятор</a>
+    <a href="#logic">Логикалық амалдар</a>
+    <a href="#practice">Тапсырмалар</a>
+    <a href="#quiz">Тест</a>
+</nav>
+
+<div class="container">
+
+    <!-- Теория бөлімі -->
+    <section id="theory">
+        <h2>1. Перцептронның құрылымы мен терминдер</h2>
+        <p><strong>Перцептрон</strong> — бұл биологиялық нейронның жұмысын имитациялайтын қарапайым математикалық модель. Оны 1950-жылдары Фрэнк Розенблатт ойлап тапқан.</p>
+        
+        <ul>
+            <li><strong>Нейрон:</strong> Ақпаратты өңдейтін және тарататын негізгі жасуша.</li>
+            <li><strong>Бинарлы классификация:</strong> Деректерді екі топтың біріне (мысалы, 0 немесе 1) жатқызу процесі.</li>
+            <li><strong>Кіріс сигналдары ($x_i$):</strong> Нейронға келетін бастапқы ақпарат (пиксельдер, сандар).</li>
+            <li><strong>Салмақтар ($w_i$):</strong> Кіріс сигналының маңыздылығын көрсететін коэффициенттер.</li>
+            <li><strong>Ығысу ($b$ / bias):</strong> Нейронның белсендірілу шегін (табалдырығын) реттейтін қосымша параметр.</li>
+            <li><strong>Белсендіру (активация) функциясы:</strong> Салмақталған қосындыны шығыс сигналына (0 немесе 1) айналдырады.</li>
+        </ul>
+
+        <h3>Математикалық формула:</h3>
+        <p style="text-align: center; font-size: 1.2rem; background: #eef2ff; padding: 10px; border-radius: 5px;">
+            $z = (x_1 \cdot w_1) + (x_2 \cdot w_2) + ... + b$<br>
+            <strong>Шығыс ($y$):</strong> Егер $z \ge 0$ болса, $y = 1$; Егер $z < 0$ болса, $y = 0$.
+        </p>
+    </section>
+
+    <!-- Интерактивті Симулятор -->
+    <section id="simulator">
+        <h2>2. Перцептронның интерактивті симуляторы</h2>
+        <p>Параметрлерді өзгертіп, салмақталған қосынды ($z$) мен шығыс ($y$) мәнінің қалай өзгеретінін бақылаңыз:</p>
+
+        <div class="simulator-box">
+            <div class="control-group">
+                <!-- Кірістер -->
+                <div class="control-item">
+                    <h4>1-Кіріс ($x_1$)</h4>
+                    <label><input type="radio" name="x1" value="0" onclick="updateSim()" checked> 0</label>
+                    <label><input type="radio" name="x1" value="1" onclick="updateSim()"> 1</label>
+                    <br><br>
+                    <label for="w1">Салмақ ($w_1$): <span id="w1-val">0.5</span></label>
+                    <input type="range" id="w1" min="-2" max="2" step="0.1" value="0.5" oninput="updateSim()">
+                </div>
+
+                <!-- 2-Кіріс -->
+                <div class="control-item">
+                    <h4>2-Кіріс ($x_2$)</h4>
+                    <label><input type="radio" name="x2" value="0" onclick="updateSim()" checked> 0</label>
+                    <label><input type="radio" name="x2" value="1" onclick="updateSim()"> 1</label>
+                    <br><br>
+                    <label for="w2">Салмақ ($w_2$): <span id="w2-val">0.5</span></label>
+                    <input type="range" id="w2" min="-2" max="2" step="0.1" value="0.5" oninput="updateSim()">
+                </div>
+
+                <!-- Bias -->
+                <div class="control-item">
+                    <h4>Ығысу ($b$)</h4>
+                    <label for="b">Bias ($b$): <span id="b-val">-0.7</span></label>
+                    <input type="range" id="b" min="-2" max="2" step="0.1" value="-0.7" oninput="updateSim()">
+                </div>
+            </div>
+
+            <div class="sim-output">
+                <div>Есептелуі: <code id="calc-str">z = (0 × 0.5) + (0 × 0.5) - 0.7 = -0.7</code></div>
+                <div style="margin-top: 10px;">
+                    Салмақталған қосынды <strong>$z = <span id="z-val">-0.7</span>$</strong>
+                </div>
+                <div style="margin-top: 10px;">
+                    Соңғы Шығыс <strong>$y = $</strong> <span id="y-badge" class="badge badge-0">0</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Логикалық амалдар -->
+    <section id="logic">
+        <h2>3. Логикалық амалдарды перцептронмен орындау</h2>
+        
+        <h3>3.1. AND (ЖӘНЕ) операторы</h3>
+        <p>Параметрлер: $w_1 = 0.5$, $w_2 = 0.5$, $b = -0.7$</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>$x_1$</th>
+                    <th>$x_2$</th>
+                    <th>Салмақталған қосынды ($z$)</th>
+                    <th>Шығыс ($y$)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>0</td><td>0</td><td>$0\cdot 0.5 + 0\cdot 0.5 - 0.7 = -0.7$</td><td><strong>0</strong></td></tr>
+                <tr><td>0</td><td>1</td><td>$0\cdot 0.5 + 1\cdot 0.5 - 0.7 = -0.2$</td><td><strong>0</strong></td></tr>
+                <tr><td>1</td><td>0</td><td>$1\cdot 0.5 + 0\cdot 0.5 - 0.7 = -0.2$</td><td><strong>0</strong></td></tr>
+                <tr><td>1</td><td>1</td><td>$1\cdot 0.5 + 1\cdot 0.5 - 0.7 = 0.3$</td><td><strong>1</strong></td></tr>
+            </tbody>
+        </table>
+
+        <h3>3.2. OR (НЕМЕСЕ) операторы</h3>
+        <p>Параметрлер: $w_1 = 1.0$, $w_2 = 1.0$, $b = -0.5$</p>
+        <p>Егер $x_1 = 1, x_2 = 0$ болса: $z = (1 \cdot 1.0) + (0 \cdot 1.0) - 0.5 = 0.5 \ge 0 \rightarrow y = 1$.</p>
+    </section>
+
+    <!-- Тәжірибелік тапсырмалар -->
+    <section id="practice">
+        <h2>4. Тәжірибелік Тапсырмалар</h2>
+
+        <div class="quiz-card">
+            <p><strong>1-тапсырма:</strong> Перцептрондағы «ығысу» (bias) параметрі не үшін қажет?</p>
+            <textarea placeholder="Жауабыңызды осы жерге жазыңыз..."></textarea>
+        </div>
+
+        <div class="quiz-card">
+            <p><strong>2-тапсырма (Challenge):</strong> Неліктен бір қабатты перцептрон XOR (қатаң НЕМЕСЕ) логикалық амалын есептей алмайды?</p>
+            <textarea placeholder="Жауабыңызды жазыңыз..."></textarea>
+            <button class="action-btn" style="margin-top: 10px;" onclick="toggleAnswer('xor-ans')">Анықтаманы көру</button>
+            <div id="xor-ans" style="display: none; margin-top: 10px; color: #555;">
+                <em>Түсініктеме: Bir қабатты перцептрон тек сызықтық бөлінетін есептерді шеше алады (екі топты бір түзу сызықпен бөлу). XOR амалының нәтижелерін сызықтық жолмен бөлу мүмкін емес, ол үшін көп қабатты нейрондық желі қажет.</em>
+            </div>
+        </div>
+    </section>
+
+    <!-- Тест -->
+    <section id="quiz">
+        <h2>5. Білімді тексеру (Тест)</h2>
+
+        <!-- Сұрау 1 -->
+        <div class="quiz-card">
+            <p><strong>1. Перцептрондағы «ығысу» (bias) параметрінің негізгі қызметі не?</strong></p>
+            <button class="quiz-btn" onclick="checkQuiz(1, false, this)">А) Кіріс сигналдарының санын көбейту</button>
+            <button class="quiz-btn" onclick="checkQuiz(1, true, this)">В) Нейронның белсендірілу шегін (табалдырығын) реттеу</button>
+            <button class="quiz-btn" onclick="checkQuiz(1, false, this)">С) Тек теріс сандарды жою</button>
+            <div id="q1-fb" class="feedback"></div>
+        </div>
+
+        <!-- Сұрау 2 -->
+        <div class="quiz-card">
+            <p><strong>2. Егер салмақталған қосынды мен ығысудың жиынтығы $z = -0.1$ болса, табалдырықтық активация функциясы қандай нәтиже береді?</strong></p>
+            <button class="quiz-btn" onclick="checkQuiz(2, true, this)">A) 0</button>
+            <button class="quiz-btn" onclick="checkQuiz(2, false, this)">B) 1</button>
+            <button class="quiz-btn" onclick="checkQuiz(2, false, this)">C) -1</button>
+            <div id="q2-fb" class="feedback"></div>
+        </div>
+
+        <!-- Сұрау 3 -->
+        <div class="quiz-card">
+            <p><strong>3. Нейрондық желіні «оқыту» дегеніміз не?</strong></p>
+            <button class="quiz-btn" onclick="checkQuiz(3, false, this)">А) Белсендіру функциясын жою</button>
+            <button class="quiz-btn" onclick="checkQuiz(3, false, this)">В) Кіріс мәндерін қолмен өзгерту</button>
+            <button class="quiz-btn" onclick="checkQuiz(3, true, this)">С) Қажетті нәтижеге жету үшін салмақтар мен ығысуды реттеу</button>
+            <div id="q3-fb" class="feedback"></div>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    // Симулятор скрипті
+    function updateSim() {
+        const x1 = parseFloat(document.querySelector('input[name="x1"]:checked').value);
+        const x2 = parseFloat(document.querySelector('input[name="x2"]:checked').value);
+        const w1 = parseFloat(document.getElementById('w1').value);
+        const w2 = parseFloat(document.getElementById('w2').value);
+        const b = parseFloat(document.getElementById('b').value);
+
+        document.getElementById('w1-val').innerText = w1;
+        document.getElementById('w2-val').innerText = w2;
+        document.getElementById('b-val').innerText = b;
+
+        const z = (x1 * w1) + (x2 * w2) + b;
+        const zRounded = Math.round(z * 100) / 100;
+
+        document.getElementById('calc-str').innerText = `z = (${x1} × ${w1}) + (${x2} × ${w2}) + (${b}) = ${zRounded}`;
+        document.getElementById('z-val').innerText = zRounded;
+
+        const yBadge = document.getElementById('y-badge');
+        if (zRounded >= 0) {
+            yBadge.innerText = '1';
+            yBadge.className = 'badge badge-1';
+        } else {
+            yBadge.innerText = '0';
+            yBadge.className = 'badge badge-0';
+        }
+    }
+
+    // Тексеру скрипттері
+    function checkQuiz(qNum, isCorrect, btn) {
+        const fb = document.getElementById(`q${qNum}-fb`);
+        const parent = btn.parentElement;
+        parent.querySelectorAll('.quiz-btn').forEach(b => b.style.background = 'white');
+
+        if (isCorrect) {
+            btn.style.background = '#c8e6c9';
+            fb.innerText = '✔ Дұрыс жауап!';
+            fb.className = 'feedback correct';
+        } else {
+            btn.style.background = '#ffcdd2';
+            fb.innerText = '✖ Қате жауап, қайтадан байқап өтіңіз.';
+            fb.className = 'feedback incorrect';
+        }
+    }
+
+    function toggleAnswer(id) {
+        const el = document.getElementById(id);
+        el.style.display = (el.style.display === 'none') ? 'block' : 'none';
+    }
+
+    // Бет жүктелгенде симуляторды инициализациялау
+    window.onload = updateSim;
+</script>
+
+</body>
+</html>
