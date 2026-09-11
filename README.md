@@ -1,2 +1,2 @@
 # Persiptron-task
-Перцептрон және оның қызметі 10 сынып
+index.html
